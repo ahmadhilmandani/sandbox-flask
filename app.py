@@ -1,6 +1,8 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, session, make_response
 
 app = Flask(__name__, template_folder='templates')
+
+app.secret_key = 'password'
 
 # part 1: First flask project
 @app.route('/')
@@ -34,6 +36,44 @@ def handle_auth():
     password = request.form.get('password')
     return f'username: {username}\npassword: {password}'
 
+# part 6: sessions & cookies
+@app.route('/session-and-cookies')
+def session_and_cookies():
+  return render_template('session_cookies.html', message_from_session='No session nor cookies')
+
+@app.route('/set-session')
+def set_session():
+  session['name'] = 'hilman'
+  session['role'] = 'user'
+  session['age'] = 22
+  return render_template('session_cookies.html', message_from_session='Session set.')
+
+@app.route('/get-session')
+def get_session():
+  if 'name' in session.keys() and 'role' in session.keys() and 'age' in session.keys():
+    name = session['name']
+    role = session['role']
+    age = session['age']
+    return render_template('session_cookies.html', message_from_session=f'user: {name} role: {role} age: {age}')
+  else:
+    return render_template('session_cookies.html', message_from_session=f'no session found')
+    
+
+@app.route('/clear-session')
+def clear_session():
+  session.clear()
+  return render_template('session_cookies.html', message_from_session='session cleared')
+
+@app.route('/set-cookies')
+def set_cookies():
+  response = make_response(render_template('session_cookies.html', message_from_session='cookies set.'))
+  response.set_cookie('cookie1', 'a cookie')
+  return response
+
+@app.route('/get-cookies')
+def get_cookies():
+  cookie = request.cookies['cookie1']
+  return render_template('session_cookies.html', message_from_session=f'cookie: {cookie}')
 
 if __name__ == "__main__":
   app.run(host='127.0.0.1', debug=True)

@@ -3,16 +3,31 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %} sandbox {% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
 </head>
+
 <body>
-  <p>halo dunia</p>
+  <h1 class="mb-5 font-bold text-rose-500 text-xl">halo dunia</h1>
   {% block content %}
-    <div>test</div>
+  <div>test</div>
   {% endblock %}
-  
+
 </body>
+
 </html>
