@@ -1,11 +1,25 @@
-from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
-app = Flask(__name__, template_folder='templates')
+from flask import Flask
 
-@app.route('/')
-def index():
-  return render_template('index.html', message='Hello World', title='Index')
+# membuat instance DB menggunakan library SQLAlchemy
+db = SQLAlchemy()
 
+def create_app():
+  # create flask app
+  app = Flask(__name__, template_folder='templates')
+  # set database (sqlite) path
+  app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./test.db'
+  
+  # init db
+  db.init_app(app)
 
-if __name__ == 'main':
-  app.run(host='127.0.0.1', debug=True)
+  # register routes 
+  from routes import register_routes
+  register_routes(app, db)
+  
+  # migrate the db
+  migrate = Migrate(app, db)
+
+  return app
